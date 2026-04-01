@@ -1,0 +1,12 @@
+build/
+*.o
+*.so
+*.a
+*.co
+*.out
+__pycache__/
+*.pyc
+.cache/
+compile_commands.json
+*.json
+!config/*.json

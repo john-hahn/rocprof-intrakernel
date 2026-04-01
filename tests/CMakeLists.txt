@@ -1,0 +1,17 @@
+find_package(hip REQUIRED)
+
+add_executable(test_timestamp test_timestamp.hip)
+target_link_libraries(test_timestamp PRIVATE rocprof_intrakernel_headers hip::host)
+add_test(NAME test_timestamp COMMAND test_timestamp)
+
+add_executable(test_wave_info test_wave_info.hip)
+target_link_libraries(test_wave_info PRIVATE rocprof_intrakernel_headers hip::host)
+add_test(NAME test_wave_info COMMAND test_wave_info)
+
+add_executable(test_trace_roundtrip test_trace_roundtrip.hip)
+target_link_libraries(test_trace_roundtrip PRIVATE rocprof_intrakernel_headers hip::host)
+add_test(NAME test_trace_roundtrip COMMAND test_trace_roundtrip)
+
+add_executable(test_circular_buffer test_circular_buffer.hip)
+target_link_libraries(test_circular_buffer PRIVATE rocprof_intrakernel_headers hip::host)
+add_test(NAME test_circular_buffer COMMAND test_circular_buffer)
