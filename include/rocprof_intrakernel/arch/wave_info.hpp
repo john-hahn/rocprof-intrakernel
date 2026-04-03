@@ -34,7 +34,13 @@ static constexpr uint32_t kWaveMask = kWaveSize - 1;
 
 __device__ __forceinline__ uint32_t read_hw_id1() {
   uint32_t hw_id;
+#if defined(__gfx1100__) || defined(__gfx1101__) || defined(__gfx1102__) || \
+    defined(__gfx1150__) || defined(__gfx1151__)
   asm volatile("s_getreg_b32 %0, hwreg(HW_REG_HW_ID1)" : "=s"(hw_id));
+#else
+  // CDNA / GFX9: the register is called HW_REG_HW_ID (id=4)
+  asm volatile("s_getreg_b32 %0, hwreg(HW_REG_HW_ID)" : "=s"(hw_id));
+#endif
   return hw_id;
 }
 
