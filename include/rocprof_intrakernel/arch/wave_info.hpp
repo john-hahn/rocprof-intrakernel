@@ -8,7 +8,11 @@ namespace rocprof_intrakernel::arch {
 // -mwavefrontsize32 / -mwavefrontsize64 and the target architecture.
 //   RDNA (wave32 mode): 32
 //   CDNA (always):      64
+#if defined(__AMDGCN_WAVEFRONT_SIZE)
 static constexpr uint32_t kWaveSize = __AMDGCN_WAVEFRONT_SIZE;
+#else
+static constexpr uint32_t kWaveSize = 32;
+#endif
 static constexpr uint32_t kWaveSizeLog2 = (kWaveSize == 64) ? 6 : 5;
 static constexpr uint32_t kWaveMask = kWaveSize - 1;
 
