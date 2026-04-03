@@ -12,10 +12,10 @@ Traditional GPU profilers report aggregate metrics per kernel dispatch. `rocprof
 
 | Architecture | GPU | Timer instruction | Wave size |
 |---|---|---|---|
-| RDNA 3 | gfx1100, gfx1101 | `s_sendmsg_rtn_b64 MSG_GET_REALTIME` | 32 |
-| RDNA 3.5 | gfx1150, gfx1151 | `s_sendmsg_rtn_b64 MSG_GET_REALTIME` | 32 |
+| RDNA 3 | gfx1100, gfx1101 | `s_sendmsg_rtn_b64 MSG_RTN_GET_REALTIME` | 32 |
+| RDNA 3.5 | gfx1150, gfx1151 | `s_sendmsg_rtn_b64 MSG_RTN_GET_REALTIME` | 32 |
 | CDNA 3 | gfx942 | `s_memrealtime` | 64 |
-| CDNA 3.5 | gfx950 | `s_memrealtime` | 64 |
+| CDNA 4 | gfx950 | `s_memrealtime` | 64 |
 
 ## Components
 
@@ -31,22 +31,28 @@ Static ISA disassembly and instruction classification. Correlates PC samples wit
 ## Quick start
 
 ```bash
+# Find your GPU architecture
+rocminfo | grep gfx
+
 # Build (trace examples only — just needs ROCm)
 mkdir build && cd build
 cmake .. -DCMAKE_HIP_ARCHITECTURES=gfx1151
 make -j
+
+# If ROCm isn't in the default path:
+cmake .. -DCMAKE_HIP_ARCHITECTURES=gfx950 -DCMAKE_PREFIX_PATH=/opt/rocm-7.2.0
 
 # Run
 ./rikp_trace_record --iters=10000 --out=trace.json
 ./rikp_gemm_demo --m=1024 --n=1024 --k=1024 --out=gemm_trace.json
 
 # View in browser
-# Open chrome://tracing and load trace.json
+# Open chrome://tracing or https://ui.perfetto.dev and load trace.json
 ```
 
 ### Build with tools (requires rocprofiler-sdk)
 ```bash
-cmake .. -DRIKP_BUILD_TOOLS=ON -DCMAKE_HIP_ARCHITECTURES="gfx1151;gfx942"
+cmake .. -DRIKP_BUILD_TOOLS=ON -DCMAKE_HIP_ARCHITECTURES="gfx1151;gfx950"
 make -j
 
 # Run with counter collection
@@ -94,7 +100,7 @@ sess.write_trace("output.json");
 
 ## Dependencies
 
-- **Required**: ROCm 6.0+ (HIP runtime, hipcc)
+- **Required**: ROCm 7.2+ (HIP runtime, hipcc) — tested on 7.2.0 and 7.2.1
 - **Optional for tools**: rocprofiler-sdk
 - **Optional for analysis**: Python 3.8+
 - **Build**: CMake 3.21+
