@@ -7,7 +7,7 @@ namespace rocprof_intrakernel::arch {
 // Read the GPU realtime clock (nanosecond-resolution, constant-frequency).
 //
 // Architecture dispatch:
-//   RDNA 3/3.5 (gfx1100, gfx1151): s_sendmsg_rtn_b64 MSG_GET_REALTIME  (~100 MHz)
+//   RDNA 3/3.5 (gfx1100, gfx1151): s_sendmsg_rtn_b64 MSG_RTN_GET_REALTIME  (~100 MHz)
 //   CDNA 3/3.5 (gfx942, gfx950):   s_memrealtime                       (~100 MHz or 25 MHz)
 //   Fallback (older GCN):           s_memtime (deprecated)
 
@@ -17,7 +17,7 @@ __device__ __forceinline__ uint64_t read_realtime() {
     defined(__gfx1150__) || defined(__gfx1151__)
   // RDNA 3/3.5
   asm volatile(
-      "s_sendmsg_rtn_b64 %0, sendmsg(MSG_GET_REALTIME)\n"
+      "s_sendmsg_rtn_b64 %0, sendmsg(MSG_RTN_GET_REALTIME)\n"
       "s_waitcnt lgkmcnt(0)"
       : "=s"(ts)
       :
